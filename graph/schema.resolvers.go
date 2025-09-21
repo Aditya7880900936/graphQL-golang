@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+
 	"github.com/Aditya7880900936/graphQL-golang/database"
 	"github.com/Aditya7880900936/graphQL-golang/graph/model"
 )
@@ -14,12 +15,12 @@ var db = database.Connect()
 
 // CreateJobListing is the resolver for the createJobListing field.
 func (r *mutationResolver) CreateJobListing(ctx context.Context, input model.CreateJobListingInput) (*model.JobListing, error) {
-	return db.CreateJobListing(input), nil
+	return db.CreateJobLsiting(input), nil
 }
 
 // UpdateJobListing is the resolver for the updateJobListing field.
 func (r *mutationResolver) UpdateJobListing(ctx context.Context, id string, input model.UpdateJobListingInput) (*model.JobListing, error) {
-	return db.UpdateJobListing(id, input), nil	
+	return db.UpdateJobListing(id, input), nil
 }
 
 // DeleteJobListing is the resolver for the deleteJobListing field.
