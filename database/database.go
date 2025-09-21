@@ -56,8 +56,11 @@ func (db *DB) GetJobs() []*model.JobListing {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	collection := db.client.Database("graphql-golang").Collection("jobs")
-	cursor, err := collection.Find(ctx, map[string]string{})
+	cursor, err := collection.Find(ctx, bson.D{})
 	if err != nil {
+		log.Fatal(err)
+	}
+	if err = cursor.All(context.TODO(), &jobListings); err != nil {
 		log.Fatal(err)
 	}
 	for cursor.Next(ctx) {
@@ -73,6 +76,19 @@ func (db *DB) GetJobs() []*model.JobListing {
 
 func (db *DB) CreateJobLsiting(jobInfo model.CreateJobListingInput) *model.JobListing {
 	var returnJobListing model.JobListing
+	collection := db.client.Database("graphql-golang").Collection("jobs")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	inserted, err := collection.InsertOne(ctx, bson.M{"title": jobInfo.Title, "description": jobInfo.Description, "url": jobInfo.URL, "company": jobInfo.Company})
+	if err != nil {
+		log.Fatal(err)
+	}
+	insertedID := inserted.InsertedID.(primitive.ObjectID).Hex()
+	filter := bson.M{"_id": insertedID}
+	err = collection.FindOne(ctx, filter).Decode(&returnJobListing)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &returnJobListing
 }
 
