@@ -94,6 +94,23 @@ func (db *DB) CreateJobLsiting(jobInfo model.CreateJobListingInput) *model.JobLi
 
 func (db *DB) UpdateJobListing(id string, jobInfo model.UpdateJobListingInput) *model.JobListing {
 	var jobListing model.JobListing
+	collection := db.client.Database("graphql-golang").Collection("jobs")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	updateJobInfo := bson.M{}
+	if jobInfo.Title!= nil {
+		updateJobInfo["title"] = jobInfo.Title
+	}
+	if jobInfo.Description!= nil {
+		updateJobInfo["description"] = jobInfo.Description
+	}
+	if jobInfo.URL!= nil {
+		updateJobInfo["url"] = jobInfo.URL
+	}
+	if jobInfo.Company!= nil {
+		updateJobInfo["company"] = jobInfo.Company
+	}
 	return &jobListing
 }
 

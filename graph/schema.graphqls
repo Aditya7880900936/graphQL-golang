@@ -32,6 +32,7 @@ input UpdateJobListingInput {
   title: String
   description: String
   url: String
+  company : String
 }
 
 type DeleteJobResponse {

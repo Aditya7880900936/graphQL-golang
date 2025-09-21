@@ -2456,7 +2456,7 @@ func (ec *executionContext) unmarshalInputUpdateJobListingInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "description", "url"}
+	fieldsInOrder := [...]string{"title", "description", "url", "company"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -2484,6 +2484,13 @@ func (ec *executionContext) unmarshalInputUpdateJobListingInput(ctx context.Cont
 				return it, err
 			}
 			it.URL = data
+		case "company":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("company"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Company = data
 		}
 	}
 
