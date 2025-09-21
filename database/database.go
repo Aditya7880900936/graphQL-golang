@@ -99,21 +99,37 @@ func (db *DB) UpdateJobListing(id string, jobInfo model.UpdateJobListingInput) *
 	defer cancel()
 
 	updateJobInfo := bson.M{}
-	if jobInfo.Title!= nil {
+	if jobInfo.Title != nil {
 		updateJobInfo["title"] = jobInfo.Title
 	}
-	if jobInfo.Description!= nil {
+	if jobInfo.Description != nil {
 		updateJobInfo["description"] = jobInfo.Description
 	}
-	if jobInfo.URL!= nil {
+	if jobInfo.URL != nil {
 		updateJobInfo["url"] = jobInfo.URL
 	}
-	if jobInfo.Company!= nil {
+	if jobInfo.Company != nil {
 		updateJobInfo["company"] = jobInfo.Company
+	}
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+	update := bson.M{"$set": updateJobInfo}
+	err := collection.FindOneAndUpdate(ctx, filter, update, options.FindOneAndUpdate().SetReturnDocument(1)).Decode(&jobListing)
+	if err != nil {
+		log.Fatal(err)
 	}
 	return &jobListing
 }
 
 func (db *DB) DeleteJobListing(jobId string) *model.DeleteJobResponse {
+	collection := db.client.Database("graphql-golang").Collection("jobs")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	_id, _ := primitive.ObjectIDFromHex(jobId)
+	filter := bson.M{"_id": _id}
+	_, err := collection.DeleteOne(ctx, filter)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &model.DeleteJobResponse{DeleteJobID: jobId}
 }
