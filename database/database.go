@@ -83,7 +83,7 @@ func (db *DB) CreateJobLsiting(jobInfo model.CreateJobListingInput) *model.JobLi
 	if err != nil {
 		log.Fatal(err)
 	}
-	insertedID := inserted.InsertedID.(primitive.ObjectID).Hex()
+	insertedID := inserted.InsertedID.(primitive.ObjectID)
 	filter := bson.M{"_id": insertedID}
 	err = collection.FindOne(ctx, filter).Decode(&returnJobListing)
 	if err != nil {

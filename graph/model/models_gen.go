@@ -14,11 +14,11 @@ type DeleteJobResponse struct {
 }
 
 type JobListing struct {
-	ID          string `json:"_id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Company     string `json:"company"`
-	URL         string `json:"url"`
+	ID          string `json:"_id" bson:"_id"`
+	Title       string `json:"title" bson:"title"`
+	Description string `json:"description" bson:"description"`
+	Company     string `json:"company" bson:"company"`
+	URL         string `json:"url" bson:"url"`
 }
 
 type Mutation struct {
